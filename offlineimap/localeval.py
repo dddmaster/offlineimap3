@@ -24,6 +24,7 @@ class LocalEval:
 
     def __init__(self, path=None):
         self.namespace = {}
+        self.attr = None
 
         if path is not None:
             # FIXME: limit opening files owned by current user with rights set
@@ -34,7 +35,12 @@ class LocalEval:
             for attr in dir(module):
                 self.namespace[attr] = getattr(module, attr)
 
-    def eval(self, text, namespace=None):
+    def eval(self, text, namespace=None, attr=None):
+        self.attr = attr
+        
+        for attr in dir(self):
+            if attr == 'attr' and getattr(self,attr) != None:
+                self.namespace[attr] = getattr(self,attr)
         names = {}
         names.update(self.namespace)
         if namespace is not None:
