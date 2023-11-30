@@ -78,7 +78,15 @@ class MaildirRepository(BaseRepository):
 
     def getlocalroot(self):
         xforms = [os.path.expanduser, os.path.expandvars]
-        return self.getconf_xform('localfolders', xforms)
+        try:
+            l_fold = self.getconf_xform('foldereval', xforms)
+        except Exception as e:
+            return self.getconf_xform('localfolders', xforms)
+
+        try:
+            return self.localeval.eval(l_fold,attr=self)
+        except Exception as e:
+            return self.getconf_xform('localfolders', xforms)
 
     def debug(self, msg):
         """
